@@ -109,6 +109,21 @@ body {
     background-color: #f1f5f9;
 }
 
+.btn-danger {
+    background-color: var(--danger);
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #dc2626;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.85rem;
+    border-radius: 8px;
+}
+
 .btn-block {
     display: block;
     width: 100%;
@@ -160,6 +175,12 @@ body {
     gap: 1.5rem;
 }
 
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
 .card {
     background-color: var(--card-bg);
     border: 1px solid var(--border);
@@ -208,6 +229,7 @@ body {
     padding: 1rem;
     text-align: left;
     border-bottom: 1px solid var(--border);
+    vertical-align: middle;
 }
 
 .data-table th {
@@ -216,7 +238,7 @@ body {
     color: var(--text-muted);
 }
 
-/* 狀態徽章 */
+/* 狀態與分類徽章 */
 .badge {
     display: inline-block;
     padding: 0.25rem 0.5rem;
@@ -231,39 +253,44 @@ body {
     color: #d97706;
 }
 
-/* 會員驗證頁面 (F-01) */
-.auth-container {
+.badge-category {
+    background-color: #e0f2fe;
+    color: #0369a1;
+}
+
+/* 會員驗證頁面與通用表單 (F-01, F-02) */
+.auth-container, .form-container {
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 2rem 0;
 }
 
-.auth-card {
+.auth-card, .form-card {
     background-color: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 2.5rem;
     width: 100%;
-    max-width: 450px;
+    max-width: 500px;
     box-shadow: var(--shadow-lg);
 }
 
-.auth-card h2 {
+.auth-card h2, .form-card h2 {
     font-size: 1.75rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
     text-align: center;
 }
 
-.auth-subtitle {
+.auth-subtitle, .form-subtitle {
     color: var(--text-muted);
     font-size: 0.9rem;
     text-align: center;
     margin-bottom: 2rem;
 }
 
-.auth-form .form-group {
+.form-group {
     margin-bottom: 1.25rem;
 }
 
@@ -275,7 +302,7 @@ body {
     color: var(--text-main);
 }
 
-.form-group input {
+.form-group input, .form-group select, .form-group textarea {
     width: 100%;
     padding: 0.75rem 1rem;
     border: 1px solid var(--border);
@@ -285,27 +312,98 @@ body {
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.form-group input:focus {
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
     outline: none;
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 }
 
-.auth-footer {
-    margin-top: 1.5rem;
-    text-align: center;
-    font-size: 0.9rem;
+.form-help-text {
+    display: block;
     color: var(--text-muted);
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
 }
 
-.auth-footer a {
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+/* 圖片預覽 */
+.current-image-preview {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.current-image-preview p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.preview-thumb {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+/* 商品管理面板 */
+.my-products-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.my-products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.table-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+.no-img-placeholder {
+    width: 60px;
+    height: 60px;
+    background-color: #f1f5f9;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.price-text {
+    font-weight: 700;
     color: var(--primary);
-    text-decoration: none;
-    font-weight: 600;
 }
 
-.auth-footer a:hover {
-    text-decoration: underline;
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.empty-state {
+    padding: 3rem 1rem;
+    color: var(--text-muted);
 }
 
 /* 提示訊息 (Alerts) */

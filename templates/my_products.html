@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}我的商品管理 - 校園二手交易平台{% endblock %}
+
+{% block content %}
+<div class="my-products-container">
+    <div class="my-products-header">
+        <h2>我的商品管理 (F-02)</h2>
+        <a href="/product/add" class="btn btn-primary">+ 刊登新商品</a>
+    </div>
+
+    <!-- 顯示 Flash 訊息 -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="card">
+        {% if products %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>商品圖片</th>
+                        <th>標題 (Title)</th>
+                        <th>分類 (Category)</th>
+                        <th>售價 (Price)</th>
+                        <th>刊登時間</th>
+                        <th>管理操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                        <tr>
+                            <td>
+                                {% if product.image %}
+                                    <img src="{{ url_for('static', filename='uploads/' ~ product.image) }}" alt="商品照" class="table-img">
+                                {% else %}
+                                    <div class="no-img-placeholder">無圖片</div>
+                                {% endif %}
+                            </td>
+                            <td><strong>{{ product.title }}</strong></td>
+                            <td><span class="badge badge-category">{{ product.category }}</span></td>
+                            <td><span class="price-text">NT$ {{ product.price|int }}</span></td>
+                            <td>{{ (product.created_at|string).split(' ')[0] }}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="/product/edit/{{ product.id }}" class="btn btn-outline btn-sm">編輯</a>
+                                    <form action="/product/delete/{{ product.id }}" method="POST" onsubmit="return confirm('確定要下架並刪除此商品嗎？');" style="display: inline;">
+                                        <button type="submit" class="btn btn-danger btn-sm">刪除</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="empty-state text-center">
+                <p>您目前沒有刊登中的商品。</p>
+                <a href="/product/add" class="btn btn-primary" style="margin-top: 1rem;">刊登您的第一件二手商品！</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}修改商品 - 校園二手交易平台{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-card">
+        <h2>修改商品資訊 (F-02)</h2>
+        <p class="form-subtitle">更新您的二手商品欄位資訊</p>
+        
+        <form action="/product/edit/{{ product.id }}" method="POST" enctype="multipart/form-data" class="product-form">
+            <div class="form-group">
+                <label for="title">商品名稱/標題 (Title) *</label>
+                <input type="text" id="title" name="title" value="{{ product.title }}" required>
+            </div>
+            
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="category">商品分類 (Category) *</label>
+                    <select id="category" name="category" required>
+                        <option value="教科書" {% if product.category == '教科書' %}selected{% endif %}>教科書</option>
+                        <option value="電子產品" {% if product.category == '電子產品' %}selected{% endif %}>電子產品</option>
+                        <option value="生活用品" {% if product.category == '生活用品' %}selected{% endif %}>生活用品</option>
+                        <option value="自行車" {% if product.category == '自行車' %}selected{% endif %}>自行車</option>
+                        <option value="其他" {% if product.category == '其他' %}selected{% endif %}>其他</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="price">欲售價格 (Price) *</label>
+                    <input type="number" id="price" name="price" min="0" value="{{ product.price|int }}" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">商品描述 (Description)</label>
+                <textarea id="description" name="description" rows="5">{{ product.description }}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="image">更換商品相片 (若不更換請留空)</label>
+                <input type="file" id="image" name="image" accept="image/*">
+                {% if product.image %}
+                    <div class="current-image-preview">
+                        <p>目前圖片：</p>
+                        <img src="{{ url_for('static', filename='uploads/' ~ product.image) }}" alt="商品圖片" class="preview-thumb">
+                    </div>
+                {% endif %}
+                <small class="form-help-text">允許格式: JPG, JPEG, PNG, GIF</small>
+            </div>
+            
+            <div class="form-actions">
+                <a href="/my-products" class="btn btn-outline">取消</a>
+                <button type="submit" class="btn btn-primary">儲存修改</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

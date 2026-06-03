@@ -1,7 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from config import Config
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
+from functools import wraps
 import sqlite3
+import os
+import uuid
 import database
 from database import get_db
 
@@ -12,6 +16,26 @@ def create_app():
     # 註冊資料庫關閉機制
     database.init_app(app)
     
+    # 確保上傳目錄存在
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    
+    # ==========================================
+    # 會員權限驗證裝飾器 (login_required)
+    # ==========================================
+    def login_required(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if 'user_id' not in session:
+                flash('請先登入系統！', 'warning')
+                return redirect(url_for('login'))
+            return f(*args, **kwargs)
+        return decorated_function
+
+    # 檢查上傳副檔名是否合法
+    def allowed_file(filename):
+        return '.' in filename and \
+               filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
     @app.route('/')
     def index():
         # 首頁，渲染校園二手交易平台規劃與進度頁面
@@ -38,7 +62,6 @@ def create_app():
                 
             db = get_db()
             try:
-                # 密碼雜湊加密
                 hashed_password = generate_password_hash(password)
                 db.execute(
                     "INSERT INTO users (username, email, password, contact_info) VALUES (?, ?, ?, ?)",
@@ -71,7 +94,6 @@ def create_app():
             user = db.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
             
             if user and check_password_hash(user['password'], password):
-                # 登入成功，寫入 Session 狀態
                 session.clear()
                 session['user_id'] = user['id']
                 session['username'] = user['username']
@@ -89,28 +111,173 @@ def create_app():
         return redirect(url_for('index'))
 
     # ==========================================
-    # 其他功能佔位 (F-02, F-03, F-04, F-05) - 本階段不實作核心邏輯
+    # F-02 商品刊登管理模組
+    # ==========================================
+
+    @app.route('/my-products')
+    @login_required
+    def my_products():
+        db = get_db()
+        # 僅查詢當前登入使用者的商品
+        user_products = db.execute(
+            "SELECT * FROM products WHERE seller_id = ? ORDER BY created_at DESC",
+            (session['user_id'],)
+        ).fetchall()
+        return render_template('my_products.html', products=user_products)
+
+    @app.route('/product/add', methods=['GET', 'POST'])
+    @login_required
+    def add_product():
+        if request.method == 'POST':
+            title = request.form.get('title', '').strip()
+            category = request.form.get('category', '').strip()
+            price_str = request.form.get('price', '').strip()
+            description = request.form.get('description', '').strip()
+            
+            if not title or not category or not price_str:
+                flash('請填寫所有必要欄位！', 'danger')
+                return render_template('add_product.html')
+                
+            try:
+                price = float(price_str)
+            except ValueError:
+                flash('價格欄位必須是數字！', 'danger')
+                return render_template('add_product.html')
+                
+            # 處理圖片上傳
+            filename = None
+            if 'image' in request.files:
+                file = request.files['image']
+                if file and file.filename != '':
+                    if allowed_file(file.filename):
+                        # 為避免檔名重複，使用隨機 UUID 作為新檔名
+                        ext = file.filename.rsplit('.', 1)[1].lower()
+                        filename = f"{uuid.uuid4().hex}.{ext}"
+                        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    else:
+                        flash('不允許的檔案格式！只接受 png, jpg, jpeg, gif。', 'danger')
+                        return render_template('add_product.html')
+
+            db = get_db()
+            try:
+                db.execute(
+                    "INSERT INTO products (title, description, category, price, image, seller_id) VALUES (?, ?, ?, ?, ?, ?)",
+                    (title, description, category, price, filename, session['user_id'])
+                )
+                db.commit()
+                flash('商品成功刊登！', 'success')
+                return redirect(url_for('my_products'))
+            except Exception as e:
+                flash('商品刊登失敗，資料庫寫入錯誤。', 'danger')
+                
+        return render_template('add_product.html')
+
+    @app.route('/product/edit/<int:product_id>', methods=['GET', 'POST'])
+    @login_required
+    def edit_product(product_id):
+        db = get_db()
+        product = db.execute("SELECT * FROM products WHERE id = ?", (product_id,)).fetchone()
+        
+        if not product:
+            flash('找不到該商品！', 'danger')
+            return redirect(url_for('my_products'))
+            
+        # 權限驗證：只能編輯自己的商品
+        if product['seller_id'] != session['user_id']:
+            flash('您無權修改此商品！', 'danger')
+            return redirect(url_for('my_products'))
+            
+        if request.method == 'POST':
+            title = request.form.get('title', '').strip()
+            category = request.form.get('category', '').strip()
+            price_str = request.form.get('price', '').strip()
+            description = request.form.get('description', '').strip()
+            
+            if not title or not category or not price_str:
+                flash('請填寫所有必要欄位！', 'danger')
+                return render_template('edit_product.html', product=product)
+                
+            try:
+                price = float(price_str)
+            except ValueError:
+                flash('價格欄位必須是數字！', 'danger')
+                return render_template('edit_product.html', product=product)
+                
+            filename = product['image']
+            
+            # 處理圖片更換
+            if 'image' in request.files:
+                file = request.files['image']
+                if file and file.filename != '':
+                    if allowed_file(file.filename):
+                        # 刪除舊圖片檔案
+                        if product['image']:
+                            old_path = os.path.join(app.config['UPLOAD_FOLDER'], product['image'])
+                            if os.path.exists(old_path):
+                                os.remove(old_path)
+                                
+                        # 儲存新圖片
+                        ext = file.filename.rsplit('.', 1)[1].lower()
+                        filename = f"{uuid.uuid4().hex}.{ext}"
+                        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    else:
+                        flash('不允許的檔案格式！只接受 png, jpg, jpeg, gif。', 'danger')
+                        return render_template('edit_product.html', product=product)
+
+            try:
+                db.execute(
+                    "UPDATE products SET title = ?, description = ?, category = ?, price = ?, image = ? WHERE id = ?",
+                    (title, description, category, price, filename, product_id)
+                )
+                db.commit()
+                flash('商品資訊修改成功！', 'success')
+                return redirect(url_for('my_products'))
+            except Exception as e:
+                flash('商品修改失敗，資料庫寫入錯誤。', 'danger')
+                
+        return render_template('edit_product.html', product=product)
+
+    @app.route('/product/delete/<int:product_id>', methods=['POST'])
+    @login_required
+    def delete_product(product_id):
+        db = get_db()
+        product = db.execute("SELECT * FROM products WHERE id = ?", (product_id,)).fetchone()
+        
+        if not product:
+            flash('找不到該商品！', 'danger')
+            return redirect(url_for('my_products'))
+            
+        # 權限驗證：只能刪除自己的商品
+        if product['seller_id'] != session['user_id']:
+            flash('您無權刪除此商品！', 'danger')
+            return redirect(url_for('my_products'))
+            
+        try:
+            # 刪除硬碟中的商品照
+            if product['image']:
+                image_path = os.path.join(app.config['UPLOAD_FOLDER'], product['image'])
+                if os.path.exists(image_path):
+                    os.remove(image_path)
+                    
+            db.execute("DELETE FROM products WHERE id = ?", (product_id,))
+            db.commit()
+            flash('商品下架成功！', 'success')
+        except Exception as e:
+            flash('下架商品失敗。', 'danger')
+            
+        return redirect(url_for('my_products'))
+
+    # ==========================================
+    # 未開發功能佔位 (F-03, F-04, F-05) - 本階段不實作核心邏輯
     # ==========================================
     
     @app.route('/products')
     def products():
-        return "F-03 & F-04 商品列表與搜尋頁面：待第三階段開發"
+        return "F-03 & F-04 商品列表與搜尋頁面：待第四階段開發"
 
     @app.route('/product/<int:product_id>')
     def product_detail(product_id):
-        return f"F-04 & F-05 商品詳細頁 (ID: {product_id}) 與聯絡賣家資訊：待第四階段開發"
-
-    @app.route('/product/add')
-    def add_product():
-        return "F-02 商品刊登頁面：待第五階段開發"
-
-    @app.route('/product/edit/<int:product_id>')
-    def edit_product(product_id):
-        return f"F-02 商品編輯頁面 (ID: {product_id})：待第五階段開發"
-
-    @app.route('/my-products')
-    def my_products():
-        return "F-02 我的商品管理頁面：待第五階段開發"
+        return f"F-04 & F-05 商品詳細頁 (ID: {product_id}) 與聯絡賣家資訊：待第五階段開發"
 
     return app
 
