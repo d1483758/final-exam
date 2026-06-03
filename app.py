@@ -268,12 +268,34 @@ def create_app():
         return redirect(url_for('my_products'))
 
     # ==========================================
-    # 未開發功能佔位 (F-03, F-04, F-05) - 本階段不實作核心邏輯
+    # F-03 商品搜尋模組
     # ==========================================
-    
     @app.route('/products')
     def products():
-        return "F-03 & F-04 商品列表與搜尋頁面：待第四階段開發"
+        q = request.args.get('q', '').strip()
+        c = request.args.get('c', '').strip()
+        
+        db = get_db()
+        sql = "SELECT * FROM products"
+        clauses = []
+        parameters = []
+        
+        if q:
+            clauses.append("(title LIKE ? OR description LIKE ?)")
+            parameters.append(f"%{q}%")
+            parameters.append(f"%{q}%")
+            
+        if c:
+            clauses.append("category = ?")
+            parameters.append(c)
+            
+        if clauses:
+            sql += " WHERE " + " AND ".join(clauses)
+            
+        sql += " ORDER BY created_at DESC"
+        
+        products_list = db.execute(sql, parameters).fetchall()
+        return render_template('products.html', products=products_list, q=q, c=c)
 
     @app.route('/product/<int:product_id>')
     def product_detail(product_id):

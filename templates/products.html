@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}商品列表 - 校園二手交易平台{% endblock %}
+
+{% block content %}
+<div class="products-container">
+    <!-- 搜尋欄區塊 -->
+    <div class="search-section card">
+        <h3>🔍 商品搜尋 (F-03)</h3>
+        <form action="/products" method="GET" class="search-form">
+            <div class="search-grid">
+                <div class="form-group">
+                    <label for="q">關鍵字 (名稱或描述)</label>
+                    <input type="text" id="q" name="q" value="{{ q or '' }}" placeholder="例如: Python, 課本, 腳踏車...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="c">分類篩選</label>
+                    <select id="c" name="c">
+                        <option value="" {% if not c %}selected{% endif %}>所有分類</option>
+                        <option value="教科書" {% if c == '教科書' %}selected{% endif %}>教科書</option>
+                        <option value="電子產品" {% if c == '電子產品' %}selected{% endif %}>電子產品</option>
+                        <option value="生活用品" {% if c == '生活用品' %}selected{% endif %}>生活用品</option>
+                        <option value="自行車" {% if c == '自行車' %}selected{% endif %}>自行車</option>
+                        <option value="其他" {% if c == '其他' %}selected{% endif %}>其他</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="search-actions">
+                {% if q or c %}
+                    <a href="/products" class="btn btn-outline">清除條件</a>
+                {% endif %}
+                <button type="submit" class="btn btn-primary">開始搜尋</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- 商品展示區塊 -->
+    <div class="results-header">
+        <h2>二手商品展示 (F-04)</h2>
+        {% if q or c %}
+            <p class="search-query-text">
+                搜尋條件：
+                {% if q %}關鍵字「<strong>{{ q }}</strong>」{% endif %}
+                {% if c %} 分類「<strong>{{ c }}</strong>」{% endif %}
+            </p>
+        {% endif %}
+    </div>
+
+    {% if products %}
+        <div class="grid">
+            {% for product in products %}
+                <div class="card product-card">
+                    <div class="product-img-wrapper">
+                        {% if product.image %}
+                            <img src="{{ url_for('static', filename='uploads/' ~ product.image) }}" alt="商品照" class="product-card-img">
+                        {% else %}
+                            <div class="product-no-img">無圖片</div>
+                        {% endif %}
+                        <span class="product-category-tag">{{ product.category }}</span>
+                    </div>
+                    
+                    <div class="product-info">
+                        <h3 class="product-title" title="{{ product.title }}">{{ product.title }}</h3>
+                        <p class="product-date">刊登時間: {{ (product.created_at|string).split(' ')[0] }}</p>
+                        
+                        <div class="product-footer">
+                            <span class="product-price">NT$ {{ product.price|int }}</span>
+                            <!-- F-04 查看詳情按鈕：鏈接已規劃，邏輯待下階段實現 -->
+                            <a href="/product/{{ product.id }}" class="btn btn-outline btn-sm">查看商品 (F-04)</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card empty-state text-center">
+            <div class="empty-icon">🔍</div>
+            <p style="font-size: 1.2rem; font-weight: 600; color: var(--text-muted); margin-top: 1rem;">
+                找不到符合條件的商品
+            </p>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.25rem;">
+                請試著更換搜尋關鍵字，或者清除分類篩選條件重試。
+            </p>
+            {% if q or c %}
+                <a href="/products" class="btn btn-primary" style="margin-top: 1.5rem;">返回所有商品列表</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
