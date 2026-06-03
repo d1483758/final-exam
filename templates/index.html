@@ -1,55 +1,55 @@
 {% extends 'base.html' %}
 
-{% block title %}期末專題 - 第一階段系統規劃與架構{% endblock %}
+{% block title %}校園二手交易平台 - 系統規劃與架構{% endblock %}
 
 {% block content %}
 <div class="welcome-banner">
-    <h1>第 1 階段：系統規劃與專案架構已成功建立</h1>
-    <p class="subtitle">專題助教已為您初始化資料庫與專案架構，等待您的確認！</p>
+    <h1>第 1 階段：校園二手交易平台 - 系統架構已修正</h1>
+    <p class="subtitle">專題助教已依照您的專題時程更新資料庫與專案架構，等待您的確認！</p>
 </div>
 
 <section class="section">
-    <h2>1. 系統功能對照表</h2>
+    <h2>1. 專題功能模組對照表</h2>
     <div class="card">
         <table class="data-table">
             <thead>
                 <tr>
                     <th>功能編號</th>
-                    <th>模組名稱</th>
-                    <th>預計開發功能</th>
+                    <th>功能名稱</th>
+                    <th>具體功能說明</th>
                     <th>目前狀態</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td><strong>F-01</strong></td>
-                    <td>會員系統</td>
-                    <td>註冊、登入、登出、權限區分</td>
+                    <td>會員登入註冊</td>
+                    <td>建立帳號、登入系統、登出功能</td>
                     <td><span class="badge badge-warning">待第二階段開發</span></td>
                 </tr>
                 <tr>
                     <td><strong>F-02</strong></td>
-                    <td>商品模組</td>
-                    <td>商品列表展示、商品詳細頁</td>
-                    <td><span class="badge badge-warning">待第三階段開發</span></td>
+                    <td>商品刊登管理</td>
+                    <td>新增商品、修改商品、刪除商品</td>
+                    <td><span class="badge badge-warning">待第五階段開發</span></td>
                 </tr>
                 <tr>
                     <td><strong>F-03</strong></td>
-                    <td>購物車系統</td>
-                    <td>加入、修改數量、移出購物車、試算</td>
-                    <td><span class="badge badge-warning">待第四階段開發</span></td>
+                    <td>商品搜尋</td>
+                    <td>關鍵字搜尋、商品分類搜尋</td>
+                    <td><span class="badge badge-warning">待第三階段開發</span></td>
                 </tr>
                 <tr>
                     <td><strong>F-04</strong></td>
-                    <td>訂單系統</td>
-                    <td>填寫收件資訊、建立訂單、訂單歷程查詢</td>
-                    <td><span class="badge badge-warning">待第四階段開發</span></td>
+                    <td>商品瀏覽</td>
+                    <td>查看商品詳細資訊</td>
+                    <td><span class="badge badge-warning">待第三/四階段開發</span></td>
                 </tr>
                 <tr>
                     <td><strong>F-05</strong></td>
-                    <td>後台管理</td>
-                    <td>商品上下架與庫存管理、訂單狀態管理</td>
-                    <td><span class="badge badge-warning">待第五階段開發</span></td>
+                    <td>聯絡賣家</td>
+                    <td>查看賣家聯絡資訊（Email）</td>
+                    <td><span class="badge badge-warning">待第四階段開發</span></td>
                 </tr>
             </tbody>
         </table>
@@ -57,49 +57,47 @@
 </section>
 
 <section class="section">
-    <h2>2. SQLite 資料表設計</h2>
+    <h2>2. 資料庫規劃 (SQLite)</h2>
     <div class="grid">
         <div class="card">
-            <h3>會員表 (users)</h3>
+            <h3>會員資料表 (users)</h3>
             <ul>
                 <li><code>id</code> (INTEGER, PK) - 會員唯一識別碼</li>
                 <li><code>username</code> (TEXT, UNIQUE) - 帳號</li>
-                <li><code>password</code> (TEXT) - 加密密碼</li>
                 <li><code>email</code> (TEXT) - 電子信箱</li>
-                <li><code>role</code> (TEXT) - 角色 (user/admin)</li>
+                <li><code>password</code> (TEXT) - 加密密碼</li>
+                <li><code>created_at</code> (TIMESTAMP) - 註冊時間</li>
             </ul>
         </div>
         <div class="card">
-            <h3>商品表 (products)</h3>
+            <h3>商品資料表 (products)</h3>
             <ul>
                 <li><code>id</code> (INTEGER, PK) - 商品唯一識別碼</li>
-                <li><code>name</code> (TEXT) - 商品名稱</li>
-                <li><code>price</code> (REAL) - 商品售價</li>
-                <li><code>stock</code> (INTEGER) - 剩餘庫存</li>
-                <li><code>image_url</code> (TEXT) - 圖片網址</li>
+                <li><code>title</code> (TEXT) - 商品標題</li>
+                <li><code>description</code> (TEXT) - 商品詳細描述</li>
+                <li><code>category</code> (TEXT) - 商品分類</li>
+                <li><code>price</code> (REAL) - 商品價格</li>
+                <li><code>image</code> (TEXT) - 商品圖片名稱</li>
+                <li><code>seller_id</code> (INTEGER, FK) - 賣家 ID (關聯至 users.id)</li>
+                <li><code>created_at</code> (TIMESTAMP) - 刊登時間</li>
             </ul>
         </div>
-        <div class="card">
-            <h3>購物車明細表 (cart_items)</h3>
-            <ul>
-                <li><code>id</code> (INTEGER, PK) - 購物車明細 ID</li>
-                <li><code>user_id</code> (INTEGER, FK) - 所屬會員</li>
-                <li><code>product_id</code> (INTEGER, FK) - 商品 ID</li>
-                <li><code>quantity</code> (INTEGER) - 購買數量</li>
-            </ul>
-        </div>
-        <div class="card">
-            <h3>訂單表 (orders & order_items)</h3>
-            <ul>
-                <li><code>orders.id</code> (INTEGER, PK) - 訂單編號</li>
-                <li><code>orders.user_id</code> (INTEGER, FK) - 下單會員</li>
-                <li><code>orders.total_price</code> (REAL) - 訂單總金額</li>
-                <li><code>orders.status</code> (TEXT) - 訂單狀態</li>
-                <li><code>order_items.product_id</code> (INTEGER) - 購買商品</li>
-                <li><code>order_items.quantity</code> (INTEGER) - 數量</li>
-                <li><code>order_items.price_at_purchase</code> (REAL) - 購買價格</li>
-            </ul>
-        </div>
+    </div>
+</section>
+
+<section class="section">
+    <h2>3. 網站頁面與路由規劃</h2>
+    <div class="card">
+        <ul class="route-list" style="list-style: none; padding-left: 0;">
+            <li style="margin-bottom: 0.75rem;">🔗 <code>/</code> - 首頁 (商品首頁/瀏覽入口)</li>
+            <li style="margin-bottom: 0.75rem;">🔗 <code>/login</code> - 登入頁面 (F-01)</li>
+            <li style="margin-bottom: 0.75rem;">🔗 <code>/register</code> - 註冊頁面 (F-01)</li>
+            <li style="margin-bottom: 0.75rem;">🔗 <code>/products</code> - 商品列表頁面 (含 F-03 分類與關鍵字搜尋)</li>
+            <li style="margin-bottom: 0.75rem;">🔗 <code>/product/&lt;id&gt;</code> - 商品詳細頁 (F-04) 與聯絡賣家資訊 (F-05)</li>
+            <li style="margin-bottom: 0.75rem;">🔗 <code>/product/add</code> - 刊登商品頁面 (F-02)</li>
+            <li style="margin-bottom: 0.75rem;">🔗 <code>/product/edit/&lt;id&gt;</code> - 商品編輯頁面 (F-02)</li>
+            <li style="margin-bottom: 0.75rem;">🔗 <code>/my-products</code> - 我的商品管理頁面 (F-02 新增/修改/刪除主控台)</li>
+        </ul>
     </div>
 </section>
 {% endblock %}

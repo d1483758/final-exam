@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}期末專題購物網站{% endblock %}</title>
+    <title>{% block title %}校園二手交易平台{% endblock %}</title>
     <!-- 引入全域樣式 -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -11,13 +11,12 @@
 <body>
     <header class="navbar">
         <div class="container navbar-container">
-            <a href="/" class="brand">期末專題購物網</a>
+            <a href="/" class="brand">🏫 校園二手交易平台</a>
             <nav class="nav-links">
                 <a href="/">首頁</a>
-                <a href="/products">商品瀏覽 (F-02)</a>
-                <a href="/cart">購物車 (F-03)</a>
-                <a href="/orders">我的訂單 (F-04)</a>
-                <a href="/admin">管理後台 (F-05)</a>
+                <a href="/products">所有商品 (F-03, F-04)</a>
+                <a href="/product/add">刊登商品 (F-02)</a>
+                <a href="/my-products">我的商品 (F-02)</a>
             </nav>
             <div class="auth-buttons">
                 <a href="/login" class="btn btn-outline">登入 (F-01)</a>
@@ -32,7 +31,7 @@
 
     <footer class="footer">
         <div class="container text-center">
-            <p>&copy; 2026 期末專題開發網. All rights reserved. (SDLC Phase 1 Setup)</p>
+            <p>&copy; 2026 校園二手交易平台 - 期末專案開發 (SDLC Phase 1 Revised)</p>
         </div>
     </footer>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
