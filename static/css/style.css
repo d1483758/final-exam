@@ -26,6 +26,9 @@ body {
     background-color: var(--background);
     color: var(--text-main);
     line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .container {
@@ -69,6 +72,12 @@ body {
     color: var(--primary);
 }
 
+.user-greeting {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-right: 1rem;
+}
+
 /* 按鈕樣式 */
 .btn {
     display: inline-block;
@@ -79,6 +88,7 @@ body {
     transition: all 0.2s;
     border: 1px solid transparent;
     cursor: pointer;
+    text-align: center;
 }
 
 .btn-primary {
@@ -99,9 +109,16 @@ body {
     background-color: #f1f5f9;
 }
 
+.btn-block {
+    display: block;
+    width: 100%;
+    margin-top: 1rem;
+}
+
 /* 主內容區 */
 .content {
     padding: 3rem 0;
+    flex-grow: 1;
 }
 
 .welcome-banner {
@@ -212,6 +229,110 @@ body {
 .badge-warning {
     background-color: #fef3c7;
     color: #d97706;
+}
+
+/* 會員驗證頁面 (F-01) */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+.auth-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: var(--shadow-lg);
+}
+
+.auth-card h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.auth-subtitle {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-form .form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.auth-footer {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.auth-footer a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* 提示訊息 (Alerts) */
+.alert {
+    padding: 1rem;
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.alert-success {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.alert-danger {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.alert-warning {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
 }
 
 /* 頁尾 */

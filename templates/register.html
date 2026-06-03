@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}會員註冊 - 校園二手交易平台{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <h2>建立新帳號</h2>
+        <p class="auth-subtitle">加入校園二手交易平台，開始買賣二手商品！</p>
+        
+        <!-- 顯示 Flash 訊息 -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form action="/register" method="POST" class="auth-form">
+            <div class="form-group">
+                <label for="username">帳號名稱 (Username)</label>
+                <input type="text" id="username" name="username" placeholder="請輸入帳號" required autocomplete="username">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">電子信箱 (Email)</label>
+                <input type="email" id="email" name="email" placeholder="請輸入您的學校或個人信箱" required autocomplete="email">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">密碼 (Password)</label>
+                <input type="password" id="password" name="password" placeholder="請輸入密碼" required autocomplete="new-password">
+            </div>
+            
+            <div class="form-group">
+                <label for="contact_info">聯絡資訊 (預留 - Line ID 或電話)</label>
+                <input type="text" id="contact_info" name="contact_info" placeholder="例如: LINE: mylineid (選填，用於後續聯絡賣家)">
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-block">註冊帳號</button>
+        </form>
+        
+        <div class="auth-footer">
+            已有帳號？ <a href="/login">立即登入</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

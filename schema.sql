@@ -4,12 +4,13 @@
 -- 啟用外鍵約束
 PRAGMA foreign_keys = ON;
 
--- 1. 會員資料表 (F-01 會員登入註冊)
+-- 1. 會員資料表 (F-01 會員登入註冊, F-05 聯絡賣家)
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
     email TEXT NOT NULL,
     password TEXT NOT NULL,
+    contact_info TEXT, -- F-05 聯絡賣家所預留的欄位 (如: LINE ID 或電話，可為空)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -18,9 +19,9 @@ CREATE TABLE IF NOT EXISTS products (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     description TEXT,
-    category TEXT NOT NULL, -- 商品分類 (如: 書籍、電子產品、生活用品等)
+    category TEXT NOT NULL, -- 預設分類: '教科書', '電子產品', '生活用品', '自行車', '其他'
     price REAL NOT NULL,
-    image TEXT, -- 商品圖片檔案名稱或網址
+    image TEXT, -- 商品圖片檔案名稱
     seller_id INTEGER NOT NULL, -- 關聯到刊登商品的賣家 (users.id)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (seller_id) REFERENCES users (id) ON DELETE CASCADE

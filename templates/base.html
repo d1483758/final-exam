@@ -15,23 +15,43 @@
             <nav class="nav-links">
                 <a href="/">首頁</a>
                 <a href="/products">所有商品 (F-03, F-04)</a>
-                <a href="/product/add">刊登商品 (F-02)</a>
-                <a href="/my-products">我的商品 (F-02)</a>
+                {% if session.get('user_id') %}
+                    <a href="/product/add">刊登商品 (F-02)</a>
+                    <a href="/my-products">我的商品 (F-02)</a>
+                {% endif %}
             </nav>
             <div class="auth-buttons">
-                <a href="/login" class="btn btn-outline">登入 (F-01)</a>
-                <a href="/register" class="btn btn-primary">註冊 (F-01)</a>
+                {% if session.get('user_id') %}
+                    <span class="user-greeting">你好, <strong>{{ session.get('username') }}</strong></span>
+                    <a href="/logout" class="btn btn-outline">登出 (F-01)</a>
+                {% else %}
+                    <a href="/login" class="btn btn-outline">登入 (F-01)</a>
+                    <a href="/register" class="btn btn-primary">註冊 (F-01)</a>
+                {% endif %}
             </div>
         </div>
     </header>
 
     <main class="container content">
+        <!-- 全域 Flash 訊息顯示 (除了 login/register 外) -->
+        {% if request.path not in ['/login', '/register'] %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        {% endif %}
+
         {% block content %}{% endblock %}
     </main>
 
     <footer class="footer">
         <div class="container text-center">
-            <p>&copy; 2026 校園二手交易平台 - 期末專案開發 (SDLC Phase 1 Revised)</p>
+            <p>&copy; 2026 校園二手交易平台 - 期末專案開發 (SDLC Phase 2 F-01)</p>
         </div>
     </footer>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
