@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.title }} - 商品詳情 - 校園二手交易平台{% endblock %}
+
+{% block content %}
+<div class="product-detail-container">
+    <!-- 麵包屑導航 (Breadcrumbs) -->
+    <div class="breadcrumbs">
+        <a href="/">首頁</a> &gt; 
+        <a href="/products">所有商品</a> &gt; 
+        <a href="/products?c={{ product.category }}">{{ product.category }}</a> &gt; 
+        <span class="current">{{ product.title }}</span>
+    </div>
+
+    <div class="product-detail-grid">
+        <!-- 左側：商品圖片區 -->
+        <div class="product-detail-gallery">
+            <div class="card detail-image-card">
+                {% if product.image %}
+                    <img src="{{ url_for('static', filename='uploads/' ~ product.image) }}" alt="商品圖片" class="detail-img">
+                {% else %}
+                    <div class="detail-no-img">
+                        <span>📷 無商品圖片</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- 右側：商品屬性及購買欄位 -->
+        <div class="product-detail-sidebar">
+            <div class="card detail-info-card">
+                <span class="detail-category">{{ product.category }}</span>
+                <h1 class="detail-title">{{ product.title }}</h1>
+                
+                <div class="detail-price-box">
+                    <span class="price-label">二手預估價</span>
+                    <span class="detail-price">NT$ {{ product.price|int }}</span>
+                </div>
+
+                <div class="detail-meta-list">
+                    <div class="meta-item">
+                        <span class="meta-label">賣家帳號：</span>
+                        <span class="meta-value">👤 {{ product.seller_name }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">刊登時間：</span>
+                        <span class="meta-value">📅 {{ (product.created_at|string).split(' ')[0] }}</span>
+                    </div>
+                </div>
+
+                <!-- F-05 聯絡賣家區塊 -->
+                <div class="contact-info-box">
+                    <h3>✉️ 聯絡賣家</h3>
+                    <div class="contact-info-content">
+                        <div class="contact-item">
+                            <span class="contact-label">電子信箱：</span>
+                            <span class="contact-value"><a href="mailto:{{ product.seller_email }}">{{ product.seller_email }}</a></span>
+                        </div>
+                        <div class="contact-item" style="margin-top: 0.75rem;">
+                            <span class="contact-label">聯絡資訊：</span>
+                            <span class="contact-value">
+                                {% if product.seller_contact %}
+                                    {{ product.seller_contact }}
+                                {% else %}
+                                    <span class="text-muted" style="font-style: italic;">賣家尚未提供其他聯絡方式</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem;">
+                    <a href="/products" class="btn btn-outline btn-block">返回商品列表</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 下方：商品描述 -->
+    <div class="product-detail-description card">
+        <h2>📝 商品詳細描述</h2>
+        <div class="description-content">
+            {% if product.description %}
+                <p>{{ product.description|replace('\n', '<br>')|safe }}</p>
+            {% else %}
+                <p class="no-description">此賣家沒有填寫商品詳細描述。</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

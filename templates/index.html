@@ -1,103 +1,91 @@
 {% extends 'base.html' %}
 
-{% block title %}校園二手交易平台 - 系統規劃與架構{% endblock %}
+{% block title %}首頁 - 校園二手交易平台{% endblock %}
 
 {% block content %}
 <div class="welcome-banner">
-    <h1>第 1 階段：校園二手交易平台 - 系統架構已修正</h1>
-    <p class="subtitle">專題助教已依照您的專題時程更新資料庫與專案架構，等待您的確認！</p>
+    <h1>🏫 校園二手交易平台</h1>
+    <p class="subtitle">專為校園學子設計的二手商品交易與物資共享平台</p>
+    
+    <!-- 快捷搜尋 -->
+    <div style="max-width: 600px; margin: 1.5rem auto 0 auto; background: white; padding: 0.5rem; border-radius: 30px; box-shadow: var(--shadow-lg); display: flex; align-items: center;">
+        <form action="/products" method="GET" style="display: flex; width: 100%; align-items: center; margin: 0;">
+            <input type="text" name="q" placeholder="想找什麼商品？例如：Python, 課本, 腳踏車..." style="border: none; padding: 0.5rem 1.5rem; flex-grow: 1; outline: none; font-size: 1rem; border-radius: 30px 0 0 30px;">
+            <button type="submit" class="btn btn-primary" style="border-radius: 30px; padding: 0.5rem 1.5rem; font-size: 0.95rem; margin-right: 2px;">開始搜尋</button>
+        </form>
+    </div>
 </div>
 
+<!-- 最新上架商品 -->
 <section class="section">
-    <h2>1. 專題功能模組對照表</h2>
-    <div class="card">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>功能編號</th>
-                    <th>功能名稱</th>
-                    <th>具體功能說明</th>
-                    <th>目前狀態</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>F-01</strong></td>
-                    <td>會員登入註冊</td>
-                    <td>建立帳號、登入系統、登出功能</td>
-                    <td><span class="badge badge-warning">待第二階段開發</span></td>
-                </tr>
-                <tr>
-                    <td><strong>F-02</strong></td>
-                    <td>商品刊登管理</td>
-                    <td>新增商品、修改商品、刪除商品</td>
-                    <td><span class="badge badge-warning">待第五階段開發</span></td>
-                </tr>
-                <tr>
-                    <td><strong>F-03</strong></td>
-                    <td>商品搜尋</td>
-                    <td>關鍵字搜尋、商品分類搜尋</td>
-                    <td><span class="badge badge-warning">待第三階段開發</span></td>
-                </tr>
-                <tr>
-                    <td><strong>F-04</strong></td>
-                    <td>商品瀏覽</td>
-                    <td>查看商品詳細資訊</td>
-                    <td><span class="badge badge-warning">待第三/四階段開發</span></td>
-                </tr>
-                <tr>
-                    <td><strong>F-05</strong></td>
-                    <td>聯絡賣家</td>
-                    <td>查看賣家聯絡資訊（Email）</td>
-                    <td><span class="badge badge-warning">待第四階段開發</span></td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="results-header" style="margin-bottom: 1.5rem;">
+        <h2>✨ 最新上架商品</h2>
+        <a href="/products" class="btn btn-outline btn-sm">查看全部商品 &rarr;</a>
     </div>
+    
+    {% if products %}
+        <div class="grid">
+            {% for product in products %}
+                <div class="card product-card">
+                    <div class="product-img-wrapper">
+                        {% if product.image %}
+                            <img src="{{ url_for('static', filename='uploads/' ~ product.image) }}" alt="商品照" class="product-card-img">
+                        {% else %}
+                            <div class="product-no-img">無圖片</div>
+                        {% endif %}
+                        <span class="product-category-tag">{{ product.category }}</span>
+                    </div>
+                    
+                    <div class="product-info">
+                        <h3 class="product-title" title="{{ product.title }}">{{ product.title }}</h3>
+                        <p class="product-date">刊登時間: {{ (product.created_at|string).split(' ')[0] }}</p>
+                        
+                        <div class="product-footer">
+                            <span class="product-price">NT$ {{ product.price|int }}</span>
+                            <a href="/product/{{ product.id }}" class="btn btn-outline btn-sm">查看商品</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card empty-state text-center" style="padding: 2.5rem; border-style: dashed;">
+            <div class="empty-icon" style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎁</div>
+            <p style="color: var(--text-muted); font-size: 1.1rem; font-weight: 500;">目前尚無二手商品刊登，歡迎登入後發布！</p>
+            <div style="margin-top: 1.25rem;">
+                <a href="/product/add" class="btn btn-primary">立即刊登</a>
+            </div>
+        </div>
+    {% endif %}
 </section>
 
+<!-- 新手使用指南 -->
 <section class="section">
-    <h2>2. 資料庫規劃 (SQLite)</h2>
-    <div class="grid">
-        <div class="card">
-            <h3>會員資料表 (users)</h3>
-            <ul>
-                <li><code>id</code> (INTEGER, PK) - 會員唯一識別碼</li>
-                <li><code>username</code> (TEXT, UNIQUE) - 帳號</li>
-                <li><code>email</code> (TEXT) - 電子信箱</li>
-                <li><code>password</code> (TEXT) - 加密密碼</li>
-                <li><code>created_at</code> (TIMESTAMP) - 註冊時間</li>
-            </ul>
+    <h2>💡 新手使用指南</h2>
+    <div class="user-guide-grid">
+        <div class="card guide-card">
+            <div class="guide-icon">📝</div>
+            <h3>1. 註冊與登入</h3>
+            <p>點選右上角「註冊」新帳號。除了電子信箱，建議填寫您的 LINE ID 等聯絡資訊，這能讓想買您物品的同學更方便聯絡您！</p>
         </div>
-        <div class="card">
-            <h3>商品資料表 (products)</h3>
-            <ul>
-                <li><code>id</code> (INTEGER, PK) - 商品唯一識別碼</li>
-                <li><code>title</code> (TEXT) - 商品標題</li>
-                <li><code>description</code> (TEXT) - 商品詳細描述</li>
-                <li><code>category</code> (TEXT) - 商品分類</li>
-                <li><code>price</code> (REAL) - 商品價格</li>
-                <li><code>image</code> (TEXT) - 商品圖片名稱</li>
-                <li><code>seller_id</code> (INTEGER, FK) - 賣家 ID (關聯至 users.id)</li>
-                <li><code>created_at</code> (TIMESTAMP) - 刊登時間</li>
-            </ul>
+        
+        <div class="card guide-card">
+            <div class="guide-icon">➕</div>
+            <h3>2. 刊登二手商品</h3>
+            <p>登入帳號後，點選上方導覽選單的「刊登商品」。填寫名稱、分類、設定預估售價、附上物資詳細描述，並上傳一張實拍照片即可發布。</p>
         </div>
-    </div>
-</section>
-
-<section class="section">
-    <h2>3. 網站頁面與路由規劃</h2>
-    <div class="card">
-        <ul class="route-list" style="list-style: none; padding-left: 0;">
-            <li style="margin-bottom: 0.75rem;">🔗 <code>/</code> - 首頁 (商品首頁/瀏覽入口)</li>
-            <li style="margin-bottom: 0.75rem;">🔗 <code>/login</code> - 登入頁面 (F-01)</li>
-            <li style="margin-bottom: 0.75rem;">🔗 <code>/register</code> - 註冊頁面 (F-01)</li>
-            <li style="margin-bottom: 0.75rem;">🔗 <code>/products</code> - 商品列表頁面 (含 F-03 分類與關鍵字搜尋)</li>
-            <li style="margin-bottom: 0.75rem;">🔗 <code>/product/&lt;id&gt;</code> - 商品詳細頁 (F-04) 與聯絡賣家資訊 (F-05)</li>
-            <li style="margin-bottom: 0.75rem;">🔗 <code>/product/add</code> - 刊登商品頁面 (F-02)</li>
-            <li style="margin-bottom: 0.75rem;">🔗 <code>/product/edit/&lt;id&gt;</code> - 商品編輯頁面 (F-02)</li>
-            <li style="margin-bottom: 0.75rem;">🔗 <code>/my-products</code> - 我的商品管理頁面 (F-02 新增/修改/刪除主控台)</li>
-        </ul>
+        
+        <div class="card guide-card">
+            <div class="guide-icon">🔍</div>
+            <h3>3. 搜尋與瀏覽物資</h3>
+            <p>在首頁橫幅搜尋框輸入關鍵字（如：Python、腳踏車），或前往「所有商品」頁面利用關鍵字與分類篩選，快速找到需要的二手物件。</p>
+        </div>
+        
+        <div class="card guide-card">
+            <div class="guide-icon">✉️</div>
+            <h3>4. 聯絡賣家交易</h3>
+            <p>在感興趣的商品詳情頁中，直接查看賣家的電子郵件與 LINE 聯絡帳號，自行以私訊或面交方式安全、無手續費地完成物品交接。</p>
+        </div>
     </div>
 </section>
 {% endblock %}

@@ -253,6 +253,11 @@ body {
     color: #d97706;
 }
 
+.badge-success {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
 .badge-category {
     background-color: #e0f2fe;
     color: #0369a1;
@@ -589,4 +594,263 @@ body {
 
 .text-center {
     text-align: center;
+}
+
+/* 商品詳細頁 (F-04) */
+.product-detail-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.breadcrumbs {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.breadcrumbs a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.breadcrumbs a:hover {
+    color: var(--primary);
+}
+
+.breadcrumbs .current {
+    color: var(--text-main);
+    font-weight: 500;
+}
+
+.product-detail-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .product-detail-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.detail-image-card {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--card-bg);
+    min-height: 350px;
+}
+
+.detail-img {
+    max-width: 100%;
+    max-height: 450px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.detail-no-img {
+    width: 100%;
+    height: 350px;
+    background-color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    font-weight: 500;
+    border-radius: 8px;
+    border: 1px dashed var(--border);
+}
+
+.detail-info-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-category {
+    align-self: flex-start;
+    background-color: #e0e7ff;
+    color: #4338ca;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+}
+
+.detail-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.3;
+    margin-bottom: 1.25rem;
+}
+
+.detail-price-box {
+    background-color: #f8fafc;
+    border: 1px solid var(--border);
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.price-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.detail-price {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.detail-meta-list {
+    margin-bottom: 1.75rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1rem;
+}
+
+.meta-item {
+    display: flex;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+}
+
+.meta-label {
+    color: var(--text-muted);
+    width: 90px;
+    flex-shrink: 0;
+}
+
+.meta-value {
+    color: var(--text-main);
+    font-weight: 500;
+}
+
+/* F-05 聯絡賣家區區 */
+.contact-info-box {
+    background-color: #f8fafc;
+    border: 1px solid #c7d2fe;
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-top: auto;
+}
+
+.contact-info-box h3 {
+    font-size: 1rem;
+    color: #4338ca;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+}
+
+.contact-info-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.contact-item {
+    font-size: 0.9rem;
+    display: flex;
+}
+
+.contact-label {
+    color: var(--text-muted);
+    width: 80px;
+    flex-shrink: 0;
+}
+
+.contact-value {
+    color: var(--text-main);
+    font-weight: 500;
+}
+
+.contact-value a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.contact-value a:hover {
+    text-decoration: underline;
+}
+
+.product-detail-description {
+    padding: 2rem;
+}
+
+.product-detail-description h2 {
+    font-size: 1.25rem;
+    color: var(--text-main);
+    border-left: 4px solid var(--primary);
+    padding-left: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.description-content {
+    font-size: 1rem;
+    color: #334155;
+    line-height: 1.7;
+}
+
+.no-description {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* 新手指南樣式 */
+.user-guide-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.guide-card {
+    text-align: center;
+    padding: 2.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.guide-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    background-color: #f1f5f9;
+    width: 65px;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: var(--primary);
+    transition: transform 0.3s;
+}
+
+.guide-card:hover .guide-icon {
+    transform: scale(1.1) rotate(10deg);
+}
+
+.guide-card h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.75rem;
+}
+
+.guide-card p {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.5;
 }

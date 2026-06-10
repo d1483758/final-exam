@@ -38,8 +38,15 @@ def create_app():
 
     @app.route('/')
     def index():
-        # 首頁，渲染校園二手交易平台規劃與進度頁面
-        return render_template('index.html')
+        # 首頁，查詢最新 4 筆商品並渲染
+        db = get_db()
+        try:
+            latest_products = db.execute(
+                "SELECT * FROM products ORDER BY created_at DESC LIMIT 4"
+            ).fetchall()
+        except sqlite3.OperationalError:
+            latest_products = []
+        return render_template('index.html', products=latest_products)
 
     # ==========================================
     # F-01 會員登入註冊模組
@@ -299,7 +306,25 @@ def create_app():
 
     @app.route('/product/<int:product_id>')
     def product_detail(product_id):
-        return f"F-04 & F-05 商品詳細頁 (ID: {product_id}) 與聯絡賣家資訊：待第五階段開發"
+        db = get_db()
+        product = db.execute(
+            """
+            SELECT p.*, 
+                   u.username AS seller_name, 
+                   u.email AS seller_email, 
+                   u.contact_info AS seller_contact
+            FROM products p
+            INNER JOIN users u ON p.seller_id = u.id
+            WHERE p.id = ?
+            """,
+            (product_id,)
+        ).fetchone()
+        
+        if not product:
+            flash('找不到該商品，已導回商品列表頁！', 'danger')
+            return redirect(url_for('products'))
+            
+        return render_template('product_detail.html', product=product)
 
     return app
 

@@ -6,7 +6,7 @@
 <div class="products-container">
     <!-- 搜尋欄區塊 -->
     <div class="search-section card">
-        <h3>🔍 商品搜尋 (F-03)</h3>
+        <h3>🔍 商品搜尋</h3>
         <form action="/products" method="GET" class="search-form">
             <div class="search-grid">
                 <div class="form-group">
@@ -38,7 +38,7 @@
 
     <!-- 商品展示區塊 -->
     <div class="results-header">
-        <h2>二手商品展示 (F-04)</h2>
+        <h2>二手商品展示</h2>
         {% if q or c %}
             <p class="search-query-text">
                 搜尋條件：
@@ -67,8 +67,7 @@
                         
                         <div class="product-footer">
                             <span class="product-price">NT$ {{ product.price|int }}</span>
-                            <!-- F-04 查看詳情按鈕：鏈接已規劃，邏輯待下階段實現 -->
-                            <a href="/product/{{ product.id }}" class="btn btn-outline btn-sm">查看商品 (F-04)</a>
+                            <a href="/product/{{ product.id }}" class="btn btn-outline btn-sm">查看商品</a>
                         </div>
                     </div>
                 </div>
