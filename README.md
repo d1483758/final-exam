@@ -74,9 +74,9 @@ final-exam/
 ## 🚀 快速開始 (Quick Start)
 
 ### 1. 安裝依賴環境
-本專案僅依賴 Flask 開發包，請先在終端機安裝：
+本專案僅依賴 Flask 開發包，在 Windows 上請使用 `py` 啟動安裝：
 ```bash
-pip install flask
+py -m pip install flask
 ```
 
 ### 2. 初始化資料庫
@@ -90,7 +90,7 @@ py init_db.py
 ```bash
 py app.py
 ```
-啟動後，在瀏覽器打開網址：👉 **[http://127.0.0.1:5000/](http://127.0.0.1:5000/)**
+啟動後，在瀏覽器打開網址：👉 **[http://127.0.0.1:5001/](http://127.0.0.1:5001/)**
 
 ---
 
